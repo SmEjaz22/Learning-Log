@@ -1,0 +1,39 @@
+{%extends 'Learning_logs/base.html'%}
+
+{%block content%}
+
+<p>
+    Topic: {{topic.text}}
+
+</p>
+
+<p> Entries:
+
+<p>
+    <a href="{% url 'Learning_logs:new_entry' topic.id %}">Add new entry</a>
+</p>
+
+<ul>
+    {%for x in entries%}
+    <li>
+        <p>{{x.date_added|date:'d m Y, D H:i:s'}} </p>
+        <p>{{x.text|linebreaks}} </p>
+        <!--  In Django templates, a vertical line (|) represents a template filter—
+a function that modifies the value in a template variable during the rendering 
+process. -->
+        <!-- The filter linebreaks 5 ensures that long text entries include line breaks 
+in a format understood by browsers, -->
+
+        <!--From edit_entry-->
+        <p>
+            <a href="{% url 'Learning_logs:edit_entry' x.id %}">Edit entry</a>
+        </p>
+
+    </li>
+
+    {%empty%}
+    <li>There are no entries for this topic yet.</li>
+    {%endfor%}
+
+</ul>
+{%endblock content%}

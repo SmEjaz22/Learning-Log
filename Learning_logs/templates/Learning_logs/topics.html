@@ -1,0 +1,33 @@
+{%extends 'Learning_logs/base.html'%}
+
+{%block content%}
+<h3>
+    Topics
+</h3>
+
+<ul>
+    {% for topic in topics%}
+    <li>
+        <a href="{% url 'Learning_logs:topic' topic.id %}">
+            {{topic.text}}
+    </li> <!-- To print a variable in a template, wrap the variable name in double braces.
+     -->
+
+    <!--    We also use the empty template tag 4, which tells Django what to 
+        do if there are no items in the list. In this case, we print a message -->
+    {% empty %}
+    <li>
+        no topics have been added yet.
+    </li>
+    {%endfor%}
+
+</ul>
+
+
+<a href="{% url 'Learning_logs:new_topic' %}">Add a new topic</a>
+{%endblock content%}
+<!-- 
+    {% for item in list %}
+        do something with each item
+    {% endfor %}
+  -->

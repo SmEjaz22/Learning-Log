@@ -1,0 +1,31 @@
+<h1>
+    <a href="{% url 'Learning_logs:indexx' %}">Learning Logs</a> -
+    <a href="{% url 'Learning_logs:topics' %}">topics</a> &nbsp
+    {% if user.is_authenticated %} <!-- In Django’s authentication system, every template has a user object 
+    available that always has an is_authenticated attribute set: the attribute is 
+    True if the user is logged in and False if they aren’t. This attribute allows you 
+    to display one message to authenticated users and another to unauthenti
+    cated users.-->
+    Hello, {{ user.username }}.
+    {% else %}
+    <a href="{% url 'accounts:register' %}">Register</a> -
+    <a href="{% url 'accounts:login' %}">Log in</a>
+    {% endif %}
+
+
+
+    <!-- Learning_logs namespace comes from urls.py under app with 'app_name' variable(note in urls.py). 
+     and indexx name is defined in 'path' under name= -->
+</h1>
+{% block content %}{% endblock content %}
+<!-- These are block tags.
+every block tags takes one value as their name, here block tag have name 'content'
+endblock tag doesnot require a name. -->
+
+{% if user.is_authenticated %}
+<hr />
+<form action="{% url 'accounts:logout' %}" method='post'>
+    {% csrf_token %}
+    <button name='submit'>Log out</button>
+</form>
+{% endif %}
