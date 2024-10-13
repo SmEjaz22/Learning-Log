@@ -74,7 +74,7 @@ def new_entry(request, topic_id):
     topic = topic_ofinterest.objects.get(id=topic_id)
     
     
-        # Make sure the topic's entry belongs to the current user.
+        # Make sure the topic's entry belongs to the current user. TIY 19_4
     if topic.owner != request.user:
         print("get the hell outta here")
         raise Http404 
