@@ -22,7 +22,7 @@ def index(request):
 @login_required # TO make it work add login_url in settings
 def topics(request):
     """Show all topics."""
-    topics = topic_ofinterest.objects.order_by('date_modified') # date_modified is a variable defined in models.py
+    # topics = topic_ofinterest.objects.order_by('date_modified') # date_modified is a variable defined in models.py
     
     topics = topic_ofinterest.objects.filter(owner=request.user).order_by('date_modified') #to restrict each topic to individual user
     

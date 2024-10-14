@@ -1,7 +1,7 @@
 {% extends "Learning_logs/base.html" %}
  {% block content %}
   <p>Add a new topic:</p>
-1   <form action="{% url 'Learning_logs:new_topic' %}" method='post'> <!--Send this data back to view-->
+  <form action="{% url 'Learning_logs:new_topic' %}" method='post'> <!--Send this data back to view-->
 
     {% csrf_token %} <!--Cross site request Frogery-->
 

@@ -1,24 +1,25 @@
 {%extends 'Learning_logs/base.html'%}
 
-{%block content%}
-<h3>
-    Topics
-</h3>
 
-<ul>
+{% block page_header %}
+    <h1>Topics</h1>
+{% endblock page_header %}
+
+
+{%block content%}
+
+<ul class="list-group border-bottom pb-2 mb-4">
     {% for topic in topics%}
-    <li>
+    <li class="list-group-item border-0">
         <a href="{% url 'Learning_logs:topic' topic.id %}">
-            {{topic.text}}
-    </li> <!-- To print a variable in a template, wrap the variable name in double braces.
+          {{ topic.text }}</a>
+      </li>  <!-- To print a variable in a template, wrap the variable name in double braces.
      -->
 
-    <!--    We also use the empty template tag 4, which tells Django what to 
+    <!--    We also use the empty template tag, which tells Django what to 
         do if there are no items in the list. In this case, we print a message -->
     {% empty %}
-    <li>
-        no topics have been added yet.
-    </li>
+    <li class="list-group-item border-0">No topics have been added yet.</li>
     {%endfor%}
 
 </ul>
@@ -31,3 +32,6 @@
         do something with each item
     {% endfor %}
   -->
+
+  <!--We don’t need the load bootstrap5  tag, because we’re not using any 
+custom bootstrap5 template tags in this file.-->
