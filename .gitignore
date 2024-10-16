@@ -1,0 +1,5 @@
+data.json
+db.json
+*.sqlite3
+
+.env
