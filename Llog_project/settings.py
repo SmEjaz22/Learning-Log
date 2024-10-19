@@ -35,7 +35,7 @@ ALLOWED_HOSTS = ['.vercel.app','127.0.0.1']
 # My settings.
 LOGIN_REDIRECT_URL = 'Learning_logs:topics'
 LOGOUT_REDIRECT_URL = 'Learning_logs:indexx'
-LOGIN_URL='accounts:login'
+LOGIN_URL = 'two_factor:login'  # Redirects the admin login to the 2FA login
 
 # Application definition
 
@@ -52,6 +52,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    #2FA
+    'django_otp',
+    'django_otp.plugins.otp_totp',
 
 ]
 
@@ -61,6 +65,9 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    
+    'django_otp.middleware.OTPMiddleware',
+    
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]

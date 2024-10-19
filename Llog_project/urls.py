@@ -14,11 +14,40 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import os
 from django.contrib import admin
 from django.urls import path, include
 
+from django.contrib.auth.models import User, Group
+from django.apps import apps  # To get all models
+from django_otp.admin import OTPAdminSite
+# from django_otp.plugins.otp_totp.models import TOTPDevice
+# from django_otp.plugins.otp_totp.admin import TOTPDeviceAdmin
+ 
+ 
+# Create a custom OTPAdmin site
+class OTPAdmin(OTPAdminSite):
+    pass
+
+# Create an instance of the custom admin site
+admin_site = OTPAdmin(name="OTPAdmin")
+
+models = apps.get_models()
+for model in models:
+    try:
+        admin_site.register(model)
+    except admin.sites.AlreadyRegistered:
+        pass
+ 
+ 
+
+if os.getenv('VERCEL_ENV') is None:
+    from dotenv import load_dotenv
+    load_dotenv()
+    
+admin_url = os.getenv('ADMIN_URL', 'WrongUrlBuddy.')
 urlpatterns = [
-    path('admin/', admin.site.urls), # Path is needed when mapping URLs to views.
     path('', include('Learning_logs.urls')), # we now create a urls file in our app.
-    path('accounts/',include('accounts.urls'))
+    path('accounts/',include('accounts.urls')),
+    path(f'{admin_url}/', admin_site.urls),    
 ]
