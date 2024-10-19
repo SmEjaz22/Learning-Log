@@ -21,7 +21,7 @@ class Entry(models.Model):  # models.Model means this particular class inherits 
     # should be deleted as well. This is known as a cascading delete.
     text=models.TextField()
     date_added=models.DateTimeField(auto_now=True)
-    last_modified = models.DateTimeField(auto_now=True)  #auto_now takes precedence (obviously, because it updates field each time, while auto_now_add updates on creation only.
+    last_modified = models.DateTimeField(auto_now_add=True)  #auto_now takes precedence (obviously, because it updates field each time, while auto_now_add updates on creation only.
     # So making last_modified as auto_now_add Does not automatically update time on each save. But rather updates on creation(new entry is created when change is detected) only.
     def save(self, *args, **kwargs):
         if self.pk:  # Check if it's an existing entry
