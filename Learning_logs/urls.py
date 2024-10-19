@@ -32,4 +32,6 @@ urlpatterns = [ # a list of individual pages that can be requested from the lear
     
     # Page for editing an entry.
     path('edit_entry/<int:entry_id>/', views.edit_entry, name='edit_entry'),
+    
+    path('Entry_versions/<int:entry_id>',views.entry_versions,name="entry_versions")
 ]

@@ -20,8 +20,21 @@ class Entry(models.Model):  # models.Model means this particular class inherits 
     # Django that when a topic is deleted, all the entries associated with that topic 
     # should be deleted as well. This is known as a cascading delete.
     text=models.TextField()
-    date_added=models.DateTimeField(auto_now_add=True)
-
+    date_added=models.DateTimeField(auto_now=True)
+    last_modified = models.DateTimeField(auto_now=True)  #auto_now takes precedence (obviously, because it updates field each time, while auto_now_add updates on creation only.
+    # So making last_modified as auto_now_add Does not automatically update time on each save. But rather updates on creation(new entry is created when change is detected) only.
+    def save(self, *args, **kwargs):
+        if self.pk:  # Check if it's an existing entry
+            # Fetch the existing entry from the database
+            original_entry = Entry.objects.get(pk=self.pk)
+            if original_entry.text != self.text:
+                # Save the original entry's timestamp in the past version
+                EntryHistory.objects.create(
+                    entry=self,
+                    text=original_entry.text,
+                    date_created=original_entry.date_added
+                )
+        super().save(*args, **kwargs)
     
     class Meta:
         verbose_name_plural='entries'
@@ -35,4 +48,7 @@ class Entry(models.Model):  # models.Model means this particular class inherits 
         else:
             return f"{self.text}"
         # Means show 50 characters of text with ... at end.
-    
+class EntryHistory(models.Model):
+    entry = models.ForeignKey(Entry, related_name='history', on_delete=models.CASCADE)
+    text = models.TextField()
+    date_created = models.DateTimeField()

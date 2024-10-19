@@ -2,7 +2,7 @@
 
 
 {% block page_header %}
-  <h1>{{ topic.text }}</h1>
+<h1>{{ topic.text }}</h1>
 {% endblock page_header %}
 
 
@@ -13,28 +13,33 @@
 </p>
 
 
-    {%for x in entries%}
-    <div class="card mb-3">
-        <!-- Card header with timestamp and edit link -->
-         <h4 class="card-header">
-          {{ x.date_added|date:'M d, Y H:i' }}
-           <small><a href="{% url 'Learning_logs:edit_entry' x.id %}">
-            edit entry</a></small>
-        </h4>
-        <!-- Card body with entry text -->
-         <div class="card-body">{{ x.text|linebreaks }}</div>
-      </div>
-        <!--  In Django templates, a vertical line (|) represents a template filter—
+{%for x in entries%}
+<div class="card mb-3">
+    <!-- Card header with timestamp and edit link -->
+    <h4 class="card-header">
+        {{ x.last_modified|date:'D d M Y, h:i A' }}
+        <small><a href="{% url 'Learning_logs:edit_entry' x.id %}">
+                edit entry</a></small>
+        <small class="float-end">
+            <a style="font-weight: 400;font-size: 17px;" href="{% url 'Learning_logs:entry_versions' x.id %}">
+                See Past revisions
+            </a>
+        </small>
+    </h4>
+    <!-- Card body with entry text -->
+    <div class="card-body">{{ x.text|linebreaks }}</div>
+</div>
+<!--  In Django templates, a vertical line (|) represents a template filter—
 a function that modifies the value in a template variable during the rendering 
 process. -->
-        <!-- The filter linebreaks ensures that long text entries include line breaks 
+<!-- The filter linebreaks ensures that long text entries include line breaks 
 in a format understood by browsers, -->
 
-        <!--From edit_entry-->
+<!--From edit_entry-->
 
-    {%empty%}
-    <li>There are no entries for this topic yet.</li>
-    {%endfor%}
+{%empty%}
+<li>There are no entries for this topic yet.</li>
+{%endfor%}
 
 </ul>
 {%endblock content%}

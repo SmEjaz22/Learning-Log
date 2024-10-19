@@ -1,11 +1,13 @@
 {% extends "Learning_logs/base.html" %}
+{% load django_bootstrap5 %}
+
  {% block content %}
-  <p>Add a new topic:</p>
+  <h4>Add a new topic:</h4>
   <form action="{% url 'Learning_logs:new_topic' %}" method='post'> <!--Send this data back to view-->
 
     {% csrf_token %} <!--Cross site request Frogery-->
-
-    {{ form.as_div }}   <!--This display form-->
-    <button name="submit">Add topic</button> <!--Django doesnot create button for forms-->
+    {% bootstrap_form form %}
+    {% comment %} {{ form.as_div }}   <!--This display form--> {% endcomment %}
+    {% bootstrap_button button_type="submit" content="Add Topic" %} <!--Django doesnot create button for forms-->
   </form>
  {% endblock content %}

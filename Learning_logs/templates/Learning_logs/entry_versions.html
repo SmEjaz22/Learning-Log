@@ -1,0 +1,29 @@
+{% extends "Learning_logs/base.html" %}
+{% load django_bootstrap5 %}
+
+
+{% block page_header %}
+<h3>
+    <a href="{% url 'Learning_logs:topic' topic.id%}"> {{topic}} </a>
+</h3>
+<div class="card mb-3">
+    <h4 class="card-header">
+        Last Edited: {{ entry.last_modified|date:"D, d M Y h:i A" }}
+    </h4>
+    <div class="card-body">{{ entry.text|linebreaks }}</div>
+</div>
+{% endblock page_header %}
+
+{% block content %}
+<h4>Past Versions:</h4>
+{% for past in past_entries %}
+<div class="card mb-3">
+    <h5 class="card-header">
+        {{ past.date_created|date:"D, d M Y h:i A" }}
+    </h5>
+    <div class="card-body">{{ past.text|linebreaks }}</div>
+</div>
+{% empty %}
+<p>No previous versions available.</p>
+{% endfor %}
+{% endblock content %}

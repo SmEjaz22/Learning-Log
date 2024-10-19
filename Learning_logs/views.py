@@ -1,10 +1,12 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import topic_ofinterest, Entry
 
 from .forms import TopicForm, EntryForm
 
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
+from django.utils import timezone
+from django.views.decorators.cache import never_cache
 # Create your views here.
 
 def index(request):
@@ -20,6 +22,7 @@ def index(request):
 # and a template it can use to build the page.
 
 @login_required # TO make it work add login_url in settings
+@never_cache
 def topics(request):
     """Show all topics."""
     # topics = topic_ofinterest.objects.order_by('date_modified') # date_modified is a variable defined in models.py
@@ -33,6 +36,7 @@ def topics(request):
 #request object, the template we want to use, and the context dictionary
 
 @login_required # TO make it work add login_url in settings
+@never_cache
 def topic(request,topic_id_from_url):
     """Show a single topic and all its entries."""
     topic=topic_ofinterest.objects.get(id=topic_id_from_url)
@@ -48,6 +52,7 @@ def topic(request,topic_id_from_url):
 
 # CHapter 19
 @login_required # TO make it work add login_url in settings
+@never_cache
 def new_topic(request):
     """Add a new topic."""
     if request.method != 'POST':
@@ -69,6 +74,7 @@ def new_topic(request):
     return render(request, 'Learning_logs/new_topic.html', context)
 
 @login_required # TO make it work add login_url in settings
+@never_cache
 def new_entry(request, topic_id):
     """Add a new entry for a particular topic."""
     topic = topic_ofinterest.objects.get(id=topic_id)
@@ -98,6 +104,7 @@ def new_entry(request, topic_id):
 
 
 @login_required # TO make it work add login_url in settings
+@never_cache
 def edit_entry(request, entry_id):
     
     """Edit an existing entry."""
@@ -114,7 +121,25 @@ def edit_entry(request, entry_id):
         # POST data submitted; process data.
         form = EntryForm(instance=entry, data=request.POST)
         if form.is_valid():
+            if form.has_changed():  # Check if any fields were actually changed
+                entry.last_modified = timezone.now()  # Update only if changes were made
             form.save()
             return redirect('Learning_logs:topic', topic_id_from_url=topic.id)
     context = {'entry': entry, 'topic': topic, 'form': form}
     return render(request, 'Learning_logs/edit_entry.html', context)
+
+@login_required
+@never_cache
+def entry_versions(request, entry_id):
+ # Get the current main entry
+    entry = get_object_or_404(Entry, pk=entry_id)
+    topic = entry.topic
+
+    # Get past versions, excluding the current main entry
+    past_entries = entry.history.all().order_by('-date_created')
+
+    return render(request, 'Learning_logs/entry_versions.html', {
+        'entry': entry,
+        'past_entries': past_entries,
+        'topic':topic
+    })

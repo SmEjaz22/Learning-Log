@@ -13,8 +13,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 from pathlib import Path
 
-import dj_database_url
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,7 +25,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'fallback-secret-key-if-not-set')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+# DEBUG = False
+DEBUG = os.getenv('VERCEL_ENV') is None
 
 ALLOWED_HOSTS = ['.vercel.app','127.0.0.1']
 
@@ -44,7 +43,7 @@ INSTALLED_APPS = [
         #My learning app
     'Learning_logs', # It’s important to place your own apps before the default apps, in case you need to override any behavior of the default apps with your own custom behavior.
     'accounts',
-    'dbbackup',
+
     # Third party application
     'django_bootstrap5', 
     'django.contrib.admin',
@@ -71,7 +70,7 @@ ROOT_URLCONF = 'Llog_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -90,6 +89,9 @@ WSGI_APPLICATION = 'Llog_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+
+
+# For quick development, use sqlite3db in localhost. When finished, comment this and uncomment postgres.
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
@@ -101,8 +103,13 @@ WSGI_APPLICATION = 'Llog_project.wsgi.application'
 
 
 import os
+# Only for localhost. Remove in deployed/github repo.
+from dotenv import load_dotenv
 
-
+# Only load .env if not running on Vercel
+if os.getenv('VERCEL_ENV') is None:  # This environment variable is set on Vercel automatically
+    load_dotenv()
+    
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -112,7 +119,7 @@ DATABASES = {
         'HOST': os.environ.get('POSTGRES_HOST'),
         'PORT': '5432',  # Default PostgreSQL port
         'OPTIONS': {
-            'sslmode': 'require',  # Require SSL for secure connection
+            'sslmode': 'require' if os.getenv('VERCEL_ENV') else 'prefer',  # Use 'require' on Vercel, 'prefer' locally.
         },
     }
 }
@@ -153,6 +160,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
