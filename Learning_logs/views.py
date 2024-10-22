@@ -39,7 +39,15 @@ def topics(request):
 @never_cache
 def topic(request,topic_id_from_url):
     """Show a single topic and all its entries."""
-    topic=topic_ofinterest.objects.get(id=topic_id_from_url)
+    try:
+        topic=topic_ofinterest.objects.get(id=topic_id_from_url)
+    
+    
+    except topic_ofinterest.DoesNotExist:
+        raise Http404("404 not found")
+    
+    
+    
     
     # Make sure the topic belongs to the current user.
     if topic.owner != request.user:
@@ -108,8 +116,12 @@ def new_entry(request, topic_id):
 def edit_entry(request, entry_id):
     
     """Edit an existing entry."""
-    entry = Entry.objects.get(id=entry_id)
-    topic = entry.topic
+    try:
+        entry = Entry.objects.get(id=entry_id)
+        topic = entry.topic
+    except Entry.DoesNotExist:
+        raise Http404("You do not have permission to edit this entry")
+        
     
     if topic.owner != request.user:
         raise Http404
@@ -132,9 +144,16 @@ def edit_entry(request, entry_id):
 @never_cache
 def entry_versions(request, entry_id):
  # Get the current main entry
-    entry = get_object_or_404(Entry, pk=entry_id)
+    try:
+        entry = Entry.objects.get(pk=entry_id)
+    except Entry.DoesNotExist:
+        raise Http404("The entry you are looking for does not exist.")
+    
     topic = entry.topic
 
+
+    if topic.owner != request.user:
+        raise Http404
     # Get past versions, excluding the current main entry
     past_entries = entry.history.all().order_by('-date_created')
 
