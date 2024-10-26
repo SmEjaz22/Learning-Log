@@ -1,37 +1,33 @@
-{%extends 'Learning_logs/base.html'%}
-
+{% extends 'Learning_logs/base.html' %}
 
 {% block page_header %}
     <h1>Topics</h1>
 {% endblock page_header %}
 
-
-{%block content%}
+{% block content %}
 
 <ul class="list-group border-bottom pb-2 mb-4">
-    {% for topic in topics%}
-    <li class="list-group-item border-0">
+    {% for topic in topics %}
+    <li class="list-group-item border-0 d-flex justify-content-between align-items-center">
         <a href="{% url 'Learning_logs:topic' topic.id %}">
-          {{ topic.text }}</a>
-      </li>  <!-- To print a variable in a template, wrap the variable name in double braces.
+            {{ topic.text }}
+        </a>
+<!--Even if to delete a topic we need a form and action corresponds to the url of the delete topic with id.-->
+        <form action="{% url 'Learning_logs:delete_topic' topic.id %}" method="post" class="mb-0">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this topic?');">
+                Delete Topic
+            </button>
+        </form>
+    </li><!-- To print a variable in a template, wrap the variable name in double braces.
      -->
 
     <!--    We also use the empty template tag, which tells Django what to 
         do if there are no items in the list. In this case, we print a message -->
     {% empty %}
     <li class="list-group-item border-0">No topics have been added yet.</li>
-    {%endfor%}
-
+    {% endfor %}
 </ul>
 
-
 <a href="{% url 'Learning_logs:new_topic' %}">Add a new topic</a>
-{%endblock content%}
-<!-- 
-    {% for item in list %}
-        do something with each item
-    {% endfor %}
-  -->
-
-  <!--We don’t need the load bootstrap5  tag, because we’re not using any 
-custom bootstrap5 template tags in this file.-->
+{% endblock content %}

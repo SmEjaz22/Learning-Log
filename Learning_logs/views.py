@@ -162,3 +162,17 @@ def entry_versions(request, entry_id):
         'past_entries': past_entries,
         'topic':topic
     })
+
+def delete_topic(request,topic_id_from_url):
+    """Delete a topic."""
+    try:
+        topic = topic_ofinterest.objects.get(id=topic_id_from_url)
+    except topic_ofinterest.DoesNotExist:
+        raise Http404("Topic not found")
+
+    # Make sure the topic belongs to the current user
+    if topic.owner != request.user:
+        raise Http404("You do not have permission to delete this topic")
+
+    topic.delete()
+    return redirect('Learning_logs:topics')
